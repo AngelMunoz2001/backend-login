@@ -8,15 +8,27 @@ const app = express()
 //Capturar body
 
 app.use(bodyparser.urlencoded({
-    extended: false
+    extendeWd: false
 }))
 app.use(bodyparser.json())
 
 //Conexion a BD
+const url = `mongodb+srv://angelote:angelote@cluster0.wmnksje.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`
+mongoose.connect(url,{
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => console.log('Conectado a la Base de datos'))
+.catch((error) => console.log('Error de conexion: ' + error))
+
+
 
 //Importar las rutas
+const authRoutes = require('./routes/auth')
+
 
 //ruta para el middleware
+app.use('/api/user', authRoutes)
+
 app.get('/', (req, res) =>{
     res.json({
         estado: true,
