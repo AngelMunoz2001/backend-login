@@ -1,6 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyparser = require('body-parser')
+const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
@@ -11,6 +12,13 @@ app.use(bodyparser.urlencoded({
     extendeWd: false
 }))
 app.use(bodyparser.json())
+
+//Configuracion CORS
+const corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 
 //Conexion a BD
 const url = `mongodb+srv://angelote:angelote@cluster0.wmnksje.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`
