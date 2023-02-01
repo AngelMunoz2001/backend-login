@@ -58,6 +58,18 @@ router.post('/register', async(req, res) =>{
 
 })
 
+router.post('/eraseusers', async(req,res)=>{
+    const id = req.body.id
+    try{
+        const erasedUser = await User.findByIdAndDelete({_id: id})
+    }catch{
+        res.json({
+            message: "Error al borrar",
+            error
+        })
+    }
+})
+
 
 router.post('/login', async (req,res ) =>{
     const {error} = schemaLogin.validate(req.body)
