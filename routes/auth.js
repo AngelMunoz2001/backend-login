@@ -62,6 +62,17 @@ router.post('/eraseusers', async(req,res)=>{
     const id = req.body.id
     try{
         const erasedUser = await User.findByIdAndDelete({_id: id})
+        if(erasedUser){
+            res.json({
+                message: "Usuario Borrado",
+                data: erasedUser
+            })
+        }else{
+            res.json({
+                message: "El usuario no existe en la base de datos",
+                data: null
+            })
+        }
     }catch{
         res.json({
             message: "Error al borrar",
