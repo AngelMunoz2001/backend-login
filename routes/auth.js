@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const userSchema = require('../models/User')
 
 const schemaRegister =  Joi.object({
     name: Joi.string().min(6).max(255).required(),
@@ -10,6 +11,7 @@ const schemaRegister =  Joi.object({
     email: Joi.string().min(6).max(255).required().email(),
     password: Joi.string().min(6).max(1024).required()
 })
+
 
 const schemaLogin =  Joi.object({
     email: Joi.string().min(6).max(255).required().email(),
@@ -81,6 +83,31 @@ router.post('/eraseusers', async(req,res)=>{
     }
 })
 
+
+router.put('/updateuser', async(req,res) =>{
+    const id = req.body.id
+    const {name, lastname, email, password} = req.body.id
+    
+    try{
+    const updateUser = userSchema.updateOne({_id: id}, { $set:{name, lastname, email, password} })
+        if(updateUser){
+            res.json({
+                message: "Usuario Actualizado",
+                data: erasedUser
+            })
+        }else{
+            res.json({
+                message: "El usuario no existe en la base de datos",
+                data: null
+            })
+        }
+    }catch{
+        res.json({
+            message: "Error al actualizar",
+            error
+        })
+    }
+})
 
 router.post('/login', async (req,res ) =>{
     const {error} = schemaLogin.validate(req.body)
