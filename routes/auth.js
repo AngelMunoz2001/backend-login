@@ -84,27 +84,30 @@ router.post('/eraseusers', async(req,res)=>{
 })
 
 
-router.put('/updateuser', async(req,res) =>{
-    const id = req.body.id
-    const {name, lastname, email, password} = req.body.id
-    
-    try{
-    const updateUser = userSchema.updateOne({_id: id}, { $set:{name, lastname, email, password} })
-        if(updateUser){
-            res.json({
-                message: "Usuario Actualizado",
-                data: erasedUser
-            })
-        }else{
-            res.json({
-                message: "El usuario no existe en la base de datos",
-                data: null
-            })
-        }
-    }catch{
+router.post('/updateuser', async(req,res) =>{
+    const salt = await bcrypt.genSalt(10)
+    const password = await bcrypt.hash(req.body.password, salt)
+
+    const data = {
+        name: req.body.name,
+        lastname: req.body.lastname,
+        email: req.body.email,
+        password
+    }
+    const actualizado = await User.findByIdAndUpdate(
+        {_id: req.body.id},
+        data,
+        {new: true}
+    )
+    if(actualizado){
         res.json({
-            message: "Error al actualizar",
-            error
+            message: "Usuario Actualizado",
+            data: actualizado
+        })
+    }else{
+        res.json({
+            message: "Usuario NO Actualizado",
+            
         })
     }
 })
