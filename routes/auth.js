@@ -3,7 +3,7 @@ const User = require('../models/User')
 const Joi = require('@hapi/joi')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const userSchema = require('../models/User')
+
 
 const schemaRegister =  Joi.object({
     name: Joi.string().min(6).max(255).required(),
@@ -60,7 +60,7 @@ router.post('/register', async(req, res) =>{
 
 })
 
-router.post('/eraseusers', async(req,res)=>{
+router.post('/eraseuser', async(req,res)=>{
     const id = req.body.id
     try{
         const erasedUser = await User.findByIdAndDelete({_id: id})
@@ -83,8 +83,7 @@ router.post('/eraseusers', async(req,res)=>{
     }
 })
 
-
-router.post('/updateuser', async(req,res) =>{
+router.post('/updateuser', async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const password = await bcrypt.hash(req.body.password, salt)
 
@@ -96,18 +95,17 @@ router.post('/updateuser', async(req,res) =>{
     }
     const actualizado = await User.findByIdAndUpdate(
         {_id: req.body.id},
-        data,
+        data, 
         {new: true}
     )
-    if(actualizado){
+    if(actualizado) {
         res.json({
             message: "Usuario Actualizado",
             data: actualizado
         })
-    }else{
+    } else {
         res.json({
-            message: "Usuario NO Actualizado",
-            
+            message: "Usuario No Actualizado"
         })
     }
 })
